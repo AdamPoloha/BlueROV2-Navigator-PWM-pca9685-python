@@ -68,6 +68,9 @@ class PCA9685:
         # todo reset (write 0xb6 to i2c address 00 - general call)
         self.write(REG_MODE1, [MODE1_SLEEP | MODE1_AI])
         self.get_prescaler()
+    
+    def gpio_close(self):
+        GPIO.cleanup()
 
     #########################
     # Prescaler Configuration
@@ -86,7 +89,7 @@ class PCA9685:
         if prescaler < 3 or prescaler > 0xff:
             #print("new prescaler out of range: %s" % prescaler)
             return False
-        prescaler = prescaler & 0xff
+        prescaler = int(prescaler) & 0xff
 
         # after entering sleep mode, the output counters are disabled (the
         # outputs go to zero) until one of the output counter registers
@@ -198,7 +201,7 @@ class PCA9685:
         self.write(offreg, data)
         read = self.read(offreg, len(data))
         if read != data:
-            raise Exception(f'pca9685 register write failed\noffreg:{offreg}\nwrote:{data}\nread:{read}')
+            print("pca9685 register write failed", offreg, data, read)
 
     def channel_set_duty(self, channel, duty):
         raw = self.duty_to_raw(duty)
@@ -218,7 +221,7 @@ class PCA9685:
         self.write(REG_LED0_ON_L, data)
         read = self.read(REG_LED0_ON_L, len(data))
         if read != data:
-            raise Exception(f'pca9685 register write failed\nwrote:{data}\nread:{read}')
+            print("pca9685 registers write failed", data, read)
 
     def channels_set_duty(self, duties):
         raws = [self.duty_to_raw(duty) for duty in duties]
@@ -249,7 +252,7 @@ class PCA9685:
 
     def write(self, register_address, data):
         #print("i2c write 0x%.2x: %s" % (register_address, [hex(d) for d in data]))
-        data2 = data.copy()
+        data2 = list(data)
         data2.insert(0, register_address)
         msg = smbus2.i2c_msg.write(_address, data2)
         self._bus.i2c_rdwr(msg)
@@ -287,8 +290,8 @@ class PCA9685:
 
     def raw_to_data(self, raw):
         data = [0]*2
-        data[0] = raw & 0xff
-        data[1] = (raw >> 8) & 0x0f
+        data[0] = int(raw) & 0xff
+        data[1] = (int(raw) >> 8) & 0x0f
         return data
 
     def data_to_raw(self, data):
