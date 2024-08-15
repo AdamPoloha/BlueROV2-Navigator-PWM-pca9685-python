@@ -1,11 +1,11 @@
-Blue Robotics has switched to using the RUST language and provides a precompiled library for the [Navigator](https://github.com/bluerobotics/navigator-lib), compatible with python and c++.
+[BlueRobotics](https://bluerobotics.com/) has switched to using the RUST language and provides a precompiled [library](https://github.com/bluerobotics/navigator-lib) for the [Navigator](https://bluerobotics.com/store/comm-control-power/control/navigator/), compatible with python and c++.
 
 This repository's parent seems to be abandoned with zero documentation. Therefore, this repository attempts to allow users to use python for direct communication with the PWM controller chip and supplement documentation.
 
-The project this was modified for was unsuccessful in using the navigator library supported by Blue Robotics. On top of this the project asked for ROS Melodic which uses python 2.7. This library was modified to perform lower level calculations without using builtin functions available in python 3, and it adds a close function to prevent warnings during subsequent launches.
+The project this was modified for was unsuccessful in using the navigator library supported by BlueRobotics. On top of this the project asked for ROS Melodic which uses python 2.7. This library was modified to perform lower level calculations without using builtin functions available in python 3, and it adds a close function to prevent warnings during subsequent launches.
 
 **Library Interface Structure:**
-+ __init__(bus=4) - Open bus to set i2c bus number, run initialize, GPIO setup
++ \_\_init\_\_(bus=4) - Open bus to set i2c bus number, run initialize, GPIO setup
 + initialize() - Start PCA
 + gpio_close() - Cleanup GPIO
 1. #Prescaler Configuration
